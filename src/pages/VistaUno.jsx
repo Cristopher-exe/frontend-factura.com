@@ -14,12 +14,32 @@ import {
   Typography,
   Stack,
   Alert,
+  Divider,
+  TextareaAutosize,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
+import { DataGrid } from "@mui/x-data-grid";
+import Paper from "@mui/material/Paper";
+import FormularioConcepto from "../components/FormularioConcepto.jsx";
 
 const VistaUno = () => {
   const [open, setOpen] = useState(false);
   const [msjAlert, setMsjAlert] = useState(false);
+
+  const columns = [
+    { field: "id", headerName: "#", flex: 1, minWidth: 80 },
+    { field: "cantidad", headerName: "Cantidad", flex: 1, minWidth: 80 },
+    { field: "concepto", headerName: "Concepto", flex: 1, minWidth: 80 },
+    {
+      field: "precioUnitario",
+      headerName: "Precio Unitario",
+      flex: 1,
+      minWidth: 80,
+    },
+    { field: "descuento", headerName: "Descuento", flex: 1, minWidth: 80 },
+    { field: "subTotal", headerName: "Sub Total", flex: 1, minWidth: 80 },
+    { field: "complemento", headerName: "Complemento", flex: 1, minWidth: 80 },
+  ];
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["customers"],
@@ -31,38 +51,9 @@ const VistaUno = () => {
   });
 
   const [formData, setFormData] = useState({
-    Receptor: { UID: "6169fc02637e1" },
+    Receptor: { UID: "" },
     TipoDocumento: "factura",
-    Conceptos: [
-      {
-        ClaveProdServ: "81112101",
-        Cantidad: 1,
-        ClaveUnidad: "E48",
-        Unidad: "Unidad de servicio",
-        ValorUnitario: 229.9,
-        Descripcion: "Desarrollo a la medida",
-        Impuestos: {
-          Traslados: [
-            {
-              Base: 229.9,
-              Impuesto: "002",
-              TipoFactor: "Tasa",
-              TasaOCuota: "0.16",
-              Importe: 36.784,
-            },
-          ],
-          Locales: [
-            {
-              Base: 229.9,
-              Impuesto: "ISH",
-              TipoFactor: "Tasa",
-              TasaOCuota: "0.03",
-              Importe: 6.897,
-            },
-          ],
-        },
-      },
-    ],
+    Conceptos: [],
     UsoCFDI: "S01",
     Serie: 15425,
     FormaPago: "01",
@@ -117,12 +108,21 @@ const VistaUno = () => {
       }))
     : [];
 
+  const handleUpdateConceptos = (nuevosConceptos) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      Conceptos: nuevosConceptos,
+    }));
+  };
+
   return (
     <Layout>
       <form onSubmit={handleSubmit} className="w-full">
         <Typography variant="h4" gutterBottom>
           Nuevo CFDI 4.0
         </Typography>
+
+        <Divider />
 
         <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
           <Alert
@@ -137,7 +137,11 @@ const VistaUno = () => {
           </Alert>
         </Snackbar>
 
-        <Grid container spacing={2} sx={{ width: "100%" }}>
+        <Grid
+          container
+          spacing={2}
+          sx={{ width: "100%", marginTop: "5px", marginBottom: "40px" }}
+        >
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">
@@ -331,22 +335,26 @@ const VistaUno = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            padding={2}
-            container
-            justifyContent="flex-end"
-          >
-            <Stack spacing={2} direction="row">
-              <Button variant="outlined" type="submit" color="success">
-                Guardar
-              </Button>
-            </Stack>
-          </Grid>
+        </Grid>
+
+        <FormularioConcepto onUpdateConceptos={handleUpdateConceptos} />
+
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          padding={2}
+          container
+          justifyContent="flex-end"
+        >
+          <Stack spacing={2} direction="row">
+            <Button variant="outlined" type="submit" color="success">
+              Generar CFDI
+            </Button>
+          </Stack>
         </Grid>
       </form>
+      <pre>{JSON.stringify(formData, null, 2)}</pre>
     </Layout>
   );
 };

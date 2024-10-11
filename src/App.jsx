@@ -12,9 +12,9 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <Router>
         <div className="flex">
-          <Sidebar />
+          <Sidebar className="h-screen fixed" />
 
-          <div className="flex-1">
+          <div className="flex-1 h-screen overflow-y-auto">
             <Routes>
               <Route path="/" element={<VistaUno />} />
               <Route path="/vista-dos" element={<VistaDos />} />

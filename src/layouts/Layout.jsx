@@ -5,13 +5,14 @@ const Layout = ({ children }) => {
     <Container maxWidth="lg">
       <Box
         sx={{
-          minHeight: "100vh", // Asegura que cubra toda la pantalla en altura
-          width: "100%", // Ocupa todo el ancho disponible
+          minHeight: "80vh",
+          width: "100%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
           gap: "10px",
+          paddingTop: "80px",
         }}
       >
         {children}
